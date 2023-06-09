@@ -1,17 +1,19 @@
 import os
 
-import psycopg2
-from psycopg2.extras import DictCursor
 from fastapi import FastAPI
 
 from db_process import DB
+from routers import route_todo
+from schemas import SuccessMsg
 
 
-app = FastAPI()
 DATABASE_URL = os.environ["DATABASE_URL"]
 
+app = FastAPI()
+app.include_router(route_todo.router)
 
-@app.get("/")
+
+@app.get("/", response_model=SuccessMsg)
 def root():
     return {"message": "tododo api running !"}
 
