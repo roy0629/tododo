@@ -15,3 +15,33 @@ async def db_create_todo(data: TodoRequest) -> dict:
             (data.title, data.description)
             )
         return dict(db.cursor.fetchone())
+
+
+async def db_get_todos() -> list:
+    with DB() as db:
+        db.cursor.execute(
+            """
+            SELECT
+                id, title, description
+            FROM
+                todos
+            """
+            )
+        return [dict(todo) for todo in db.cursor.fetchall()]
+
+
+
+async def db_get_single_todo(TodoRequestId: str) -> dict:
+    with DB() as db:
+        db.cursor.execute(
+            """
+            SELECT
+                id, title, description
+            FROM
+                todos
+            WHERE
+                id = %s
+            """,
+            (TodoRequestId,)
+            )
+        return dict(db.cursor.fetchone())
