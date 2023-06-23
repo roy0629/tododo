@@ -64,3 +64,21 @@ async def db_update_todo(TodoRequestId: str, data: TodoRequest) -> dict:
             (data.title, data.description, TodoRequestId)
             )
         return dict(db.cursor.fetchone())
+
+
+async def db_delete_todo(TodoRequestId: str) -> bool:
+    with DB() as db:
+        db.cursor.execute(
+            """
+            DELETE
+            FROM
+                todos
+            WHERE
+                id = %s
+            """,
+            (TodoRequestId,)
+            )
+        if db.cursor.rowcount:
+            return True
+        else:
+            return False
