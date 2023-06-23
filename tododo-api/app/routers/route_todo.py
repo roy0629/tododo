@@ -6,7 +6,7 @@ from fastapi import APIRouter, Response, Request, HTTPException
 from starlette.status import HTTP_201_CREATED
 
 from schemas import TodoRequest, TodoResponse
-from database import db_create_todo, db_get_todos, db_get_single_todo
+from database import db_create_todo, db_get_todos, db_get_single_todo, db_update_todo
 
 
 router = APIRouter()
@@ -35,6 +35,17 @@ async def get_todos():
 async def get_single_todo(id: str):
     try:
         res = await db_get_single_todo(id)
+        if res:
+            return res
+        raise HTTPException(status_code=404, detail=f"Task of ID:{id} doesn't exist")
+    except Exception:
+        traceback.print_exc()
+
+
+@router.put("/api/todo/{id}", response_model=TodoResponse)
+async def update_todo(id: str, data: TodoRequest):
+    try:
+        res = await db_update_todo(id, data)
         if res:
             return res
         raise HTTPException(status_code=404, detail=f"Task of ID:{id} doesn't exist")

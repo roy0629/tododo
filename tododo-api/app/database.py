@@ -10,7 +10,8 @@ async def db_create_todo(data: TodoRequest) -> dict:
                 (title, description)
             VALUES
                 (%s, %s)
-            RETURNING *
+            RETURNING
+                *
             """,
             (data.title, data.description)
             )
@@ -43,5 +44,23 @@ async def db_get_single_todo(TodoRequestId: str) -> dict:
                 id = %s
             """,
             (TodoRequestId,)
+            )
+        return dict(db.cursor.fetchone())
+
+
+async def db_update_todo(TodoRequestId: str, data: TodoRequest) -> dict:
+    with DB() as db:
+        db.cursor.execute(
+            """
+            UPDATE
+                todos
+            SET
+                title=%s, description=%s
+            WHERE
+                id = %s
+            RETURNING
+                *
+            """,
+            (data.title, data.description, TodoRequestId)
             )
         return dict(db.cursor.fetchone())
