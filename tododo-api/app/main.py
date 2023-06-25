@@ -18,8 +18,8 @@ def root():
     return {"message": "tododo api running !"}
 
 
-@app.get("/db-access")
-def db_access_check():
+@app.get("/db-access-check")
+def db_connection_confirmation():
     with DB() as db:
         db.cursor.execute("select * from pg_settings")
         db_setting_info = db.cursor.fetchall()
@@ -27,3 +27,5 @@ def db_access_check():
         for row in db_setting_info:
             dict_result.append(dict(row))
     return dict_result
+
+#TODO swaggeruiで処理を見やすくする

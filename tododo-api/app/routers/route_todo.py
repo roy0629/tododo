@@ -9,10 +9,10 @@ from schemas import TodoRequest, TodoResponse, SuccessMsg
 from database import db_create_todo, db_get_todos, db_get_single_todo, db_update_todo, db_delete_todo
 
 
-router = APIRouter()
+router = APIRouter(prefix="/api/todo", tags=["todo"])
 
 
-@router.post("/api/todo", response_model=TodoResponse)
+@router.post("", response_model=TodoResponse)
 async def create_todo(response: Response, data: TodoRequest):
     try:
         # todo = jsonable_encoder(data) psycopg2でのやり取りではdictで良いから
@@ -25,13 +25,13 @@ async def create_todo(response: Response, data: TodoRequest):
         traceback.print_exc()
 
 
-@router.get("/api/todo", response_model=List[TodoResponse])
+@router.get("", response_model=List[TodoResponse])
 async def get_todos():
     res = await db_get_todos()
     return res
 
 
-@router.get("/api/todo/{id}", response_model=TodoResponse)
+@router.get("/{id}", response_model=TodoResponse)
 async def get_single_todo(id: str):
     try:
         res = await db_get_single_todo(id)
@@ -42,7 +42,7 @@ async def get_single_todo(id: str):
         traceback.print_exc()
 
 
-@router.put("/api/todo/{id}", response_model=TodoResponse)
+@router.put("/{id}", response_model=TodoResponse)
 async def update_todo(id: str, data: TodoRequest):
     try:
         res = await db_update_todo(id, data)
@@ -53,7 +53,7 @@ async def update_todo(id: str, data: TodoRequest):
         traceback.print_exc()
 
 
-@router.delete("/api/todo/{id}", response_model=SuccessMsg)
+@router.delete("/{id}", response_model=SuccessMsg)
 async def delete_todo(id: str):
     try:
         res = await db_delete_todo(id)
