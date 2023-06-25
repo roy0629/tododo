@@ -1,6 +1,7 @@
 from database.db_process import DB
 from schemas.todo import TodoRequest
 
+
 async def db_create_todo(data: TodoRequest) -> dict:
     with DB() as db:
         db.cursor.execute(
@@ -31,8 +32,7 @@ async def db_get_todos() -> list:
         return [dict(todo) for todo in db.cursor.fetchall()]
 
 
-
-async def db_get_single_todo(TodoRequestId: str) -> dict:
+async def db_get_single_todo(TodoRequestId: str) -> dict | bool:
     with DB() as db:
         db.cursor.execute(
             """
@@ -45,10 +45,12 @@ async def db_get_single_todo(TodoRequestId: str) -> dict:
             """,
             (TodoRequestId,)
             )
-        return dict(db.cursor.fetchone())
+        if db.cursor.rowcount:
+            return dict(db.cursor.fetchone())
+        return False
 
 
-async def db_update_todo(TodoRequestId: str, data: TodoRequest) -> dict:
+async def db_update_todo(TodoRequestId: str, data: TodoRequest) -> dict | bool:
     with DB() as db:
         db.cursor.execute(
             """
@@ -63,7 +65,9 @@ async def db_update_todo(TodoRequestId: str, data: TodoRequest) -> dict:
             """,
             (data.title, data.description, TodoRequestId)
             )
-        return dict(db.cursor.fetchone())
+        if db.cursor.rowcount:
+            return dict(db.cursor.fetchone())
+        return False
 
 
 async def db_delete_todo(TodoRequestId: str) -> bool:
