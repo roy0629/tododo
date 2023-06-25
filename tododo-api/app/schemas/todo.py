@@ -10,7 +10,3 @@ class TodoResponse(BaseModel):
 class TodoRequest(BaseModel):
     title: str
     description: str
-
-
-class SuccessMsg(BaseModel):
-    message: str

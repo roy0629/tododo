@@ -1,5 +1,5 @@
-from db_process import DB
-from schemas import TodoRequest
+from database.db_process import DB
+from schemas.todo import TodoRequest
 
 async def db_create_todo(data: TodoRequest) -> dict:
     with DB() as db:

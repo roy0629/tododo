@@ -2,15 +2,15 @@ import os
 
 from fastapi import FastAPI
 
-from db_process import DB
-from routers import route_todo
-from schemas import SuccessMsg
+from database.db_process import DB
+from routers import router as api_router
+from schemas.common import SuccessMsg
 
 
 DATABASE_URL = os.environ["DATABASE_URL"]
 
 app = FastAPI()
-app.include_router(route_todo.router)
+app.include_router(api_router, prefix="/api")
 
 
 @app.get("/", response_model=SuccessMsg)
@@ -27,5 +27,3 @@ def db_connection_confirmation():
         for row in db_setting_info:
             dict_result.append(dict(row))
     return dict_result
-
-#TODO swaggeruiで処理を見やすくする
