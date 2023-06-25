@@ -1,6 +1,8 @@
 import os
+import traceback
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 
 from database.db_process import DB
 from routers import router as api_router
@@ -27,3 +29,12 @@ def db_connection_confirmation():
         for row in db_setting_info:
             dict_result.append(dict(row))
     return dict_result
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request, exc):
+    traceback.print_exc()
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )
